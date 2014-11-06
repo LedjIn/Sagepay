@@ -1,23 +1,27 @@
 {
-    "name": "ledjin-sagepay",
+    "name": "ledjin/sagepay",
     "type": "library",
     "description": "Sagepay payment lib",
-    "keywords": ["payment", "sagepay", "ledjin", "a2x"],
-    "homepage": "https://github.com/LedjIn",
+    "keywords": ["payment", "sagepay"],
+    "homepage": "http://www.ledj.in",
     "license": "MIT",
     "authors": [
         {
-            "name": "Alexander Chip (Alexandr Jeliuc)",
+            "name": "Alexandr Jeliuc",
             "email": "a2xchip@gmail.com"
         },
         {
-            "name":     "LedjIn",
-            "homepage": "https://github.com/LedjIn"
+            "name":     "LedjIn Labs",
+            "homepage": "http://www.ledj.in"
         },
+        {
+            "name":     "Community contributions",
+            "homepage": "https://github.com/LedjIn/Sagepay"
+        }
     ],
     "require": {
         "php": ">=5.3.2",
-        "payum/core": "~0.9.0"
+        "payum/core": "0.9.*"
     },
     "config": {
         "bin-dir": "bin"
@@ -28,7 +32,7 @@
     "target-dir": "Ledjin/Sagepay",
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.0"
+            "dev-master": "0.1-dev"
         }
     }
 }
