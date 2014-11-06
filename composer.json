@@ -1,5 +1,5 @@
 {
-    "name": "payum-sagepay",
+    "name": "ledjin-sagepay",
     "type": "library",
     "description": "Sagepay payment lib",
     "keywords": ["payment", "sagepay", "ledjin", "a2x"],
@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "payum/core": "0.12.*@dev"
+        "payum/core": "~0.9.0"
     },
     "config": {
         "bin-dir": "bin"
@@ -28,7 +28,7 @@
     "target-dir": "Ledjin/Sagepay",
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.0-dev"
+            "dev-master": "0.1.0"
         }
     }
 }
