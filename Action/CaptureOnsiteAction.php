@@ -47,15 +47,19 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
             return;
         }
 
-        $model['NotificationURL'] = $request->getToken()->getNotifyUrl();
-
+        // $model['NotificationURL'] = $request->getTokenFactory()->getNotifyUrl();
 
         $details = $this->api->prepareOnsiteDetails($model->toUnsafeArray()); // filter model details for request
 
         $missing = $this->api->getMissingDetails($details); // sagepay's api is wayward we should check for presence of required minimum
 
         if (count($missing) > 0) {
-            throw new LogicException('Missing: ' . implode(", ", $missing) . ' details are mandatory for current payment request!');
+            throw new LogicException(
+                sprintf(
+                    'Missing: %s details are mandatory for current payment request!',
+                    implode(", ", array_keys($missing))
+                )
+            );
         }
 
         $model['state'] = StateInterface::STATE_WAITING;
