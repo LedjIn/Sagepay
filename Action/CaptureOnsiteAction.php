@@ -66,8 +66,9 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
 
         $response = $this->api->createOnsitePurchase($details);
 
-        $model['state'] = $response->toArray()['Status'] ==
-            Api::STATUS_OK || Api::STATUS_OK_REPEATED ?
+        $responseArr = $response->toArray();
+        $model['state'] = $responseArr['Status'] ==
+            Api::STATUS_OK || $responseArr['Status'] == Api::STATUS_OK_REPEATED ?
                 StateInterface::STATE_REPLIED :
                 StateInterface::STATE_ERROR;
 

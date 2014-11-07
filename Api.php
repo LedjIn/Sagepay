@@ -63,7 +63,7 @@ class Api implements ApiInterface
 
         $paymentDetails['TxType'] = static::OPERATION_PAYMENT;
 
-        $query = http_build_query($params);
+        $query = http_build_query($paymentDetails);
 
         $request = new Request(
             'post',
@@ -115,10 +115,6 @@ class Api implements ApiInterface
     {
 
         $this->client->send($request, $response = new Response());
-
-        if (false == $response->isSuccessful()) {
-            throw HttpException::factory($request, $response);
-        }
 
         return $response;
     }

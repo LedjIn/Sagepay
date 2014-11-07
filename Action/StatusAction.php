@@ -11,6 +11,11 @@ use Ledjin\Sagepay\Api\State\StateInterface;
 
 class StatusAction implements ActionInterface, StateInterface
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @param GetStatusInterface $request
+     */
 
     /**
      * {@inheritDoc}
