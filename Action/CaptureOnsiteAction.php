@@ -79,12 +79,12 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
             )
         );
 
-        if ($response['Status'] == Api::STATUS_OK ||
-            $response['Status'] == Api::STATUS_OK_REPEATED
+        if ($responseArr['Status'] == Api::STATUS_OK ||
+            $responseArr['Status'] == Api::STATUS_OK_REPEATED
         ) {
 
             throw new HttpRedirect(
-                $response['NextURL']
+                $responseArr['NextURL']
             );
         }
     }
