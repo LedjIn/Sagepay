@@ -42,12 +42,11 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
+        $token = $request->getToken();
 
         if (isset($model['Status'])) {
             return;
         }
-
-        // $model['NotificationURL'] = $request->getTokenFactory()->getNotifyUrl();
 
         $details = $this->api->prepareOnsiteDetails($model->toUnsafeArray()); // filter model details for request
 
@@ -64,6 +63,10 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
 
         $model['state'] = StateInterface::STATE_WAITING;
 
+        // we do not need any sync action
+        // but payum by default do not set any afterUrl to notify token
+        $model['afterUrl'] = $token->getAfterUrl();
+
         $response = $this->api->createOnsitePurchase($details);
 
         $responseArr = $response->toArray();
@@ -79,12 +82,12 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
             )
         );
 
-        if ($response['Status'] == Api::STATUS_OK ||
-            $response['Status'] == Api::STATUS_OK_REPEATED
+        if ($responseArr['Status'] == Api::STATUS_OK ||
+            $responseArr['Status'] == Api::STATUS_OK_REPEATED
         ) {
 
             throw new HttpRedirect(
-                $response['NextURL']
+                $responseArr['NextURL']
             );
         }
     }
