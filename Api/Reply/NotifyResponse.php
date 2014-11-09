@@ -2,45 +2,52 @@
 
 namespace Ledjin\Sagepay\Api\Reply;
 
-use Payum\Core\Reply\Base;
+use Payum\Core\Reply\HttpResponse;
 use Ledjin\Sagepay\Api;
 
-class NotifyResponse extends Base
+class NotifyResponse extends HttpResponse
 {
     protected $params;
+
+    protected $content;
 
     protected $defaultParams = array(
         'Status' => Api::STATUS_OK,
         'StatusDetails' => 'Notified successfully',
+        'RedirectURL' => null,
     );
 
     public function __construct(array $params)
     {
         $this->params = array_filter(
             array_replace(
-                $this->defaultParams,
-                array_intersect($params, $this->defaultParams)
+                $params,
+                array_intersect($this->defaultParams, $params)
             )
         );
+
+
+        $this->setContent();
     }
 
-    public function setRedirectUrl($url = null)
+    protected function setContent()
     {
-        $this->params['RedirectURL'] = $url;
-    }
-
-    public function getContent()
-    {
-        if (true == (!isset($params['RedirectURL']) || empty($params['RedirectURL']))) {
+        if (true == (!isset($this->params['RedirectURL']) || empty($this->params['RedirectURL']))) {
             throw new InvalidArgumentException('The redirection url must be set.');
         }
 
         $content = '';
 
         foreach ($this->params as $key => $value) {
-            $content .= $key . '=' . $value . "\r\n";
+            $content = $content . $key . '=' . $value . "\r\n";
         }
+        $this->content = $content;
 
-        return $content;
+        return $this;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
     }
 }
