@@ -44,50 +44,50 @@ class NotifyAction extends PaymentAwareAction
         $httpRequest = new GetHttpRequest;
         $this->payment->execute($httpRequest);
 
-        if ($httpRequest->method == 'POST') {
-            $status = Api::STATUS_OK;
-            $model['state'] = StateInterface::STATE_NOTIFIED;
-            $notification = $httpRequest->query;
-
-            if ($notification['Status'] == Api::STATUS_OK) {
-                $model['state'] = StateInterface::STATE_CONFIRMED;
-            } elseif ($notification['Status'] == Api::STATUS_PENDING) {
-                $model['state'] = StateInterface::STATE_REPLIED;
-            } else {
-                $model['state'] = StateInterface::STATE_ERROR;
-            }
-
-            $statusDetails = 'Transaction processed';
-            $redirectUrl = $model['afterUrl'];
-
-            if ($notification['Status'] == Api::STATUS_ERROR
-                && isset($notification['Vendor'])
-                && isset($notification['VendorTxCode'])
-                && isset($notification['StatusDetail'])
-            ) {
-                $status = Api::STATUS_ERROR;
-                $statusDetails = 'Status of ERROR is seen, together with your Vendor, VendorTxCode and the StatusDetail.';
-            }
-
-            ///////////////////////////////
-            // TODO: invalidate signature //
-            ///////////////////////////////
-            
-            $newModel = $model->toUnsafeArray();
-            $newModel['notification'] = $notification;
-            $model->replace(
-                $newModel
-            );
-
-            $params = array(
-                'Status' => $status,
-                'StatusDetails' => $statusDetails,
-                'RedirectURL' => $redirectUrl,
-            );
-
-            throw new NotifyResponse($params);
+        if ($httpRequest->method != 'POST') {
+            return;
         }
 
+        $status = Api::STATUS_OK;
+        $model['state'] = StateInterface::STATE_NOTIFIED;
+        $notification = $httpRequest->query;
+
+        if ($notification['Status'] == Api::STATUS_OK) {
+            $model['state'] = StateInterface::STATE_CONFIRMED;
+        } elseif ($notification['Status'] == Api::STATUS_PENDING) {
+            $model['state'] = StateInterface::STATE_REPLIED;
+        } else {
+            $model['state'] = StateInterface::STATE_ERROR;
+        }
+
+        $statusDetails = 'Transaction processed';
+        $redirectUrl = $model['afterUrl'];
+
+        if ($notification['Status'] == Api::STATUS_ERROR
+            && isset($notification['Vendor'])
+            && isset($notification['VendorTxCode'])
+            && isset($notification['StatusDetail'])
+        ) {
+            $status = Api::STATUS_ERROR;
+            $statusDetails = 'Status of ERROR is seen, together with your Vendor, VendorTxCode and the StatusDetail.';
+        }
+
+                ///////////////////////////////
+                // TODO: invalidate signature //
+                ///////////////////////////////
+
+        $model['notification'] = (array) $notification;
+        $model->replace(
+            $model->toUnsafeArray()
+        );
+
+        $params = array(
+            'Status' => $status,
+            'StatusDetails' => $statusDetails,
+            'RedirectURL' => $redirectUrl,
+            );
+
+        throw new NotifyResponse($params);
     }
 
     /**
