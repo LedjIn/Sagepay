@@ -36,6 +36,11 @@ class Validator implements ValidatorInterface
         $this->params = $params;
     }
 
+    public function getAvailableParams()
+    {
+        return $this->availableParams;
+    }
+
     public function tamperingDetected($recievedSignature)
     {
         return $recievedSignature != $this->getSignature();
@@ -43,11 +48,14 @@ class Validator implements ValidatorInterface
 
     protected function getSignature()
     {
-        return md5(
-            array_filter(
-                array_replace(
-                    $this->availableParams,
-                    array_intersect_key($this->params, $this->availableParams)
+        return strtoupper(
+            md5(
+                implode(
+                    "",
+                    array_replace(
+                        $this->availableParams,
+                        array_intersect_key($this->params, $this->availableParams)
+                    )
                 )
             )
         );
