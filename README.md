@@ -8,3 +8,7 @@ This library implements [Sagepay](http://www.sagepay.com/) payment gateway for [
 ## License
 
 Sagepay is released under the [MIT License](LICENSE).
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/LedjIn/sagepay/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
