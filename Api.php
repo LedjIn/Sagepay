@@ -194,8 +194,8 @@ class Api implements ApiInterface
         $validator = new Validator();
         $available = $validator->getAvailableParams();
         foreach ($available as $key => $value) {
-            if (isset($notification[$key])) {
-                $available[$key] = $value;
+            if (array_key_exists($key, $notification)) {
+                $available[$key] = $notification[$key];
             }
         }
 
