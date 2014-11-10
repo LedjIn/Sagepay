@@ -87,7 +87,7 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
         ) {
 
             throw new HttpRedirect(
-                $responseArr['NextURL']
+                $responseArr['NextURL'] . '=' . $responseArr['VPSTxId']
             );
         }
     }

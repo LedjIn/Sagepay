@@ -101,7 +101,7 @@ class Api implements ApiInterface
             'DeliveryCountry' => null,
         );
 
-        return array_diff_key($required, $details);
+        return $this->removeNullValues(array_diff_key($required, $details));
     }
 
     /**
@@ -205,5 +205,18 @@ class Api implements ApiInterface
     protected function getOnsiteResource()
     {
         return '/gateway/service/vspserver-register.vsp';
+    }
+
+    protected function removeNullValues($params)
+    {
+        $cleared = array();
+
+        foreach ($params as $key => $value) {
+            if ($value != null) {
+                $cleared[$key] = $value;
+            }
+        }
+
+        return $cleared;
     }
 }
