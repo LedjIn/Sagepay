@@ -47,7 +47,7 @@ class StatusAction implements ActionInterface, StateInterface
         }
 
         if (self::STATE_CONFIRMED === $state) {
-            $request->markSuccess();
+            $request->markCaptured();
 
             return;
         }
