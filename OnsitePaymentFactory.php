@@ -5,6 +5,7 @@ use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Payment;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
 use Ledjin\Sagepay\Action\CaptureOnsiteAction;
+use Ledjin\Sagepay\Action\FillOrderDetailsAction;
 use Ledjin\Sagepay\Action\NotifyAction;
 use Ledjin\Sagepay\Action\StatusAction;
 
@@ -26,6 +27,7 @@ abstract class OnsitePaymentFactory
         $payment->addAction(new CaptureOnsiteAction);
         $payment->addAction(new StatusAction);
         $payment->addAction(new NotifyAction);
+        $payment->addAction(new FillOrderDetailsAction);
         $payment->addAction(new ExecuteSameRequestWithModelDetailsAction);
 
         return $payment;
