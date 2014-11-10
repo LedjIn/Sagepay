@@ -12,7 +12,6 @@ use Payum\Core\Request\GetHttpRequest;
 use Ledjin\Sagepay\Api\State\StateInterface;
 use Ledjin\Sagepay\Api;
 use Ledjin\Sagepay\Api\Reply\NotifyResponse;
-use Payum\Core\Reply\HttpRedirect;
 
 class NotifyAction extends PaymentAwareAction
 {
@@ -50,12 +49,16 @@ class NotifyAction extends PaymentAwareAction
             $model['state'] = StateInterface::STATE_NOTIFIED;
             $notification = $httpRequest->query;
 
-            if ($notification['Status'] == Api::STATUS_PENDING) {
+            if ($notification['Status'] == Api::STATUS_OK) {
+                $model['state'] = StateInterface::STATE_CONFIRMED;
+            } elseif ($notification['Status'] == Api::STATUS_PENDING) {
                 $model['state'] = StateInterface::STATE_REPLIED;
+            } else {
+                $model['state'] = StateInterface::STATE_ERROR;
             }
 
             $statusDetails = 'Transaction processed';
-            $redirectUrl = $request->getToken()->getTargetUrl();
+            $redirectUrl = $model['afterUrl'];
 
             if ($notification['Status'] == Api::STATUS_ERROR
                 && isset($notification['Vendor'])
@@ -85,29 +88,6 @@ class NotifyAction extends PaymentAwareAction
             throw new NotifyResponse($params);
         }
 
-        // with GET method we process only already notified payments
-        // return if there is no notification
-        if (!isset($model['notification'])) {
-            return;
-        }
-
-        $notification = $model['notification'];
-
-        $model['state'] = StateInterface::STATE_ERROR;
-
-        if ($notification['Status'] == Api::STATUS_OK) {
-            $model['state'] = StateInterface::STATE_CONFIRMED;
-        }
-
-        if ($notification['Status'] == Api::STATUS_PENDING) {
-            $model['state'] = StateInterface::STATE_REPLIED;
-        }
-
-        $model->replace($model->toUnsafeArray());
-
-        throw new HttpRedirect(
-            $responseArr['afterUrl']
-        );
     }
 
     /**
