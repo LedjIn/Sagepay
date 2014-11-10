@@ -12,6 +12,7 @@ use Payum\Core\Request\GetHttpRequest;
 use Ledjin\Sagepay\Api\State\StateInterface;
 use Ledjin\Sagepay\Api;
 use Ledjin\Sagepay\Api\Reply\NotifyResponse;
+use Payum\Core\Reply\HttpRedirect;
 
 class NotifyAction extends PaymentAwareAction
 {
@@ -69,9 +70,10 @@ class NotifyAction extends PaymentAwareAction
             // TODO: invalidate signature //
             ///////////////////////////////
             
-            $model['notification'] = $notification;
+            $newModel = $model->toUnsafeArray();
+            $newModel['notification'] = $notification;
             $model->replace(
-                (array) $model->toUnsafeArray()
+                $newModel
             );
 
             $params = array(
@@ -101,7 +103,7 @@ class NotifyAction extends PaymentAwareAction
             $model['state'] = StateInterface::STATE_REPLIED;
         }
 
-        $model->replace((array) $model->toUnsafeArray());
+        $model->replace($model->toUnsafeArray());
 
         throw new HttpRedirect(
             $responseArr['afterUrl']
