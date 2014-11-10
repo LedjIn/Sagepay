@@ -24,6 +24,8 @@ class Api implements ApiInterface
 
     const STATUS_OK = 'OK';
 
+    const STATUS_PENDING = 'PENDING';
+
     const STATUS_OK_REPEATED = 'OK REPEATED';
 
     const STATUS_MALFORMED = 'MALFORMED';

@@ -29,9 +29,14 @@ class NotifyAction extends PaymentAwareAction
         // invalidate:
         // - we process only replied and notified payments
         if (!isset($model['state']) ||
-            $model['state'] != StateInterface::STATE_REPLIED ||
-            $model['state'] != StateInterface::STATE_NOTIFIED ||
-            $model['state'] != StateInterface::STATE_CONFIRMED
+            !in_array(
+                $model['state'],
+                array(
+                    StateInterface::STATE_REPLIED,
+                    StateInterface::STATE_NOTIFIED,
+                    StateInterface::STATE_CONFIRMED,
+                )
+            )
         ) {
             return;
         }
@@ -42,7 +47,7 @@ class NotifyAction extends PaymentAwareAction
         if ($httpRequest->method == 'POST') {
             $status = Api::STATUS_OK;
             $model['state'] = StateInterface::STATE_NOTIFIED;
-            $notification = $httpRequest->query();
+            $notification = $httpRequest->query;
 
             if ($notification['Status'] == Api::STATUS_PENDING) {
                 $model['state'] = StateInterface::STATE_REPLIED;
