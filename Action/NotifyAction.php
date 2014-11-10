@@ -50,7 +50,7 @@ class NotifyAction extends PaymentAwareAction
 
         $status = Api::STATUS_OK;
         $model['state'] = StateInterface::STATE_NOTIFIED;
-        $notification = $httpRequest->query;
+        $notification = $httpRequest->request;
 
         if ($notification['Status'] == Api::STATUS_OK) {
             $model['state'] = StateInterface::STATE_CONFIRMED;
