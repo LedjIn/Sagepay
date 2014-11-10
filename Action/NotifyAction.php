@@ -5,7 +5,7 @@ use Payum\Core\Action\PaymentAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\Notify;
-use Payum\Core\Request\Sync;
+use Payum\Core\ApiAwareInterface;
 use Payum\Klarna\Checkout\Constants;
 use Payum\Klarna\Checkout\Request\Api\UpdateOrder;
 use Payum\Core\Request\GetHttpRequest;
@@ -13,8 +13,25 @@ use Ledjin\Sagepay\Api\State\StateInterface;
 use Ledjin\Sagepay\Api;
 use Ledjin\Sagepay\Api\Reply\NotifyResponse;
 
-class NotifyAction extends PaymentAwareAction
+class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
 {
+    /**
+     * @var Api
+     */
+    protected $api;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setApi($api)
+    {
+        if (false === $api instanceof Api) {
+            throw new UnsupportedApiException('Not supported.');
+        }
+
+        $this->api = $api;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -38,7 +55,7 @@ class NotifyAction extends PaymentAwareAction
                 )
             )
         ) {
-            return;
+            // return;
         }
 
         $httpRequest = new GetHttpRequest;
@@ -51,30 +68,33 @@ class NotifyAction extends PaymentAwareAction
         $status = Api::STATUS_OK;
         $model['state'] = StateInterface::STATE_NOTIFIED;
         $notification = $httpRequest->request;
-
-        if ($notification['Status'] == Api::STATUS_OK) {
-            $model['state'] = StateInterface::STATE_CONFIRMED;
-        } elseif ($notification['Status'] == Api::STATUS_PENDING) {
-            $model['state'] = StateInterface::STATE_REPLIED;
-        } else {
-            $model['state'] = StateInterface::STATE_ERROR;
-        }
-
-        $statusDetails = 'Transaction processed';
         $redirectUrl = $model['afterUrl'];
+        // check signature hash
+        
+        if ($this->api->tamperingDetected((array) $notification, (array) $model->toUnsafeArray())) {
+            $status = Api::STATUS_INVALID;
+            $statusDetails = "Tampering detected. Wrong hash.";
+        } else {
+            if ($notification['Status'] == Api::STATUS_OK) {
+                $model['state'] = StateInterface::STATE_CONFIRMED;
+            } elseif ($notification['Status'] == Api::STATUS_PENDING) {
+                $model['state'] = StateInterface::STATE_REPLIED;
+            } else {
+                $model['state'] = StateInterface::STATE_ERROR;
+            }
 
-        if ($notification['Status'] == Api::STATUS_ERROR
-            && isset($notification['Vendor'])
-            && isset($notification['VendorTxCode'])
-            && isset($notification['StatusDetail'])
-        ) {
-            $status = Api::STATUS_ERROR;
-            $statusDetails = 'Status of ERROR is seen, together with your Vendor, VendorTxCode and the StatusDetail.';
+            $statusDetails = 'Transaction processed';
+
+            if ($notification['Status'] == Api::STATUS_ERROR
+                && isset($notification['Vendor'])
+                && isset($notification['VendorTxCode'])
+                && isset($notification['StatusDetail'])
+            ) {
+                $status = Api::STATUS_ERROR;
+                $statusDetails = 'Status of ERROR is seen, together with your Vendor, VendorTxCode and the StatusDetail.';
+            }
+
         }
-
-                ///////////////////////////////
-                // TODO: invalidate signature //
-                ///////////////////////////////
 
         $model['notification'] = (array) $notification;
         $model->replace(

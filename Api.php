@@ -9,6 +9,7 @@ use Payum\Core\Exception\Http\HttpException;
 use Ledjin\Sagepay\Bridge\Buzz\Response;
 
 use Ledjin\Sagepay\Api\ApiInterface;
+use Ledjin\Sagepay\Api\Signature\Validator;
 
 class Api implements ApiInterface
 {
@@ -186,6 +187,26 @@ class Api implements ApiInterface
         $paymentDetails = $this->appendGlobalParams($paymentDetails);
 
         return $paymentDetails;
+    }
+
+    public function tamperingDetected(array $notification, array $model)
+    {
+        $validator = new Validator();
+        $available = $validator->getAvailableParams();
+        foreach ($available as $key => $value) {
+            if (isset($notification[$key])) {
+                $available[$key] = $value;
+            }
+        }
+
+        $available['SecurityKey'] = $model['SecurityKey'];
+        $available['VendorName'] = $this->options['vendor'];
+
+        $reciviedHash = $notification['VPSSignature'];
+
+        $validator->setParams($available);
+
+        return $validator->tamperingDetected($reciviedHash);
     }
 
     protected function appendGlobalParams(array $paymentDetails = array())
