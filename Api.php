@@ -81,6 +81,9 @@ class Api implements ApiInterface
 
     public function getMissingDetails(array $details)
     {
+
+        $details = $this->removeNullValues($details);
+
         $required = array(
             'VPSProtocol' => null,
             'TxType' => null,
@@ -104,7 +107,7 @@ class Api implements ApiInterface
             'DeliveryCountry' => null,
         );
 
-        return $this->removeNullValues(array_diff_key($required, $details));
+        return array_diff_key($required, $details);
     }
 
     /**
@@ -232,14 +235,14 @@ class Api implements ApiInterface
 
     protected function removeNullValues($params)
     {
-        $cleared = array();
+        $cleaned = array();
 
         foreach ($params as $key => $value) {
             if ($value != null) {
-                $cleared[$key] = $value;
+                $cleaned[$key] = $value;
             }
         }
 
-        return $cleared;
+        return $cleaned;
     }
 }
