@@ -6,8 +6,6 @@ use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\Notify;
 use Payum\Core\ApiAwareInterface;
-use Payum\Klarna\Checkout\Constants;
-use Payum\Klarna\Checkout\Request\Api\UpdateOrder;
 use Payum\Core\Request\GetHttpRequest;
 use Ledjin\Sagepay\Api\State\StateInterface;
 use Ledjin\Sagepay\Api;
