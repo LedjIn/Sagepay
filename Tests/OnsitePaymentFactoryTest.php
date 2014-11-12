@@ -3,10 +3,15 @@ namespace Ledjin\Sagepay\Tests;
 
 use Ledjin\Sagepay\OnsitePaymentFactory;
 
+/**
+ * @author a2xchip <a2x-chip@ledji.in>
+ * @coversDefaultClass \Ledjin\Sagepay\OnsitePaymentFactory
+ */
 class OnsitePaymentFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
+     * @covers ::__construct
      */
     public function couldNotBeInstantiated()
     {

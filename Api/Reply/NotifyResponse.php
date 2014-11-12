@@ -3,6 +3,7 @@
 namespace Ledjin\Sagepay\Api\Reply;
 
 use Payum\Core\Reply\HttpResponse;
+use Payum\Core\Exception\InvalidArgumentException;
 use Ledjin\Sagepay\Api;
 
 class NotifyResponse extends HttpResponse
@@ -26,16 +27,15 @@ class NotifyResponse extends HttpResponse
             )
         );
 
+        if (count($this->params) == 0 || !array_key_exists('RedirectURL', $this->params)) {
+            throw new InvalidArgumentException('The RedirectURL key should be set to $params');
+        }
 
         $this->setContent();
     }
 
     protected function setContent()
     {
-        if (true == (!isset($this->params['RedirectURL']) || empty($this->params['RedirectURL']))) {
-            throw new InvalidArgumentException('The redirection url must be set.');
-        }
-
         $content = '';
 
         foreach ($this->params as $key => $value) {

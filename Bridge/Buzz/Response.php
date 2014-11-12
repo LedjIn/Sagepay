@@ -9,7 +9,6 @@ class Response extends BaseResponse
 {
     /**
      * @throws \Payum\Core\Exception\LogicException
-     * 
      * @return array
      */
     public function toArray()
@@ -17,12 +16,12 @@ class Response extends BaseResponse
         $response = array();
         $content = preg_split("/[\r\n]+/", $this->getContent());
 
-        if (count($content) < 1) {
-            throw new LogicException("Response content is not valid response: \n\n{$this->getContent()}");
+        if (count($content) <= 1) {
+            throw new LogicException("Response content is not valid response.");
         }
 
         foreach ($content as $line) {
-            list($key, $value) = explode('=', $line);
+            list($key, $value) = explode("=", $line);
             $response[$key] = $value;
         }
 

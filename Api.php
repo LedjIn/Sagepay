@@ -111,7 +111,7 @@ class Api implements ApiInterface
     }
 
     /**
-     * @param \Buzz\Message\Form\FormRequest $request
+     * @param \Buzz\Message\Request $request
      *
      * @throws \Payum\Core\Exception\Http\HttpException
      *

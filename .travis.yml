@@ -4,10 +4,11 @@ php:
   - 5.3
   - 5.4
   - 5.5
+  - hhvm
 
 before_script:
   - composer install --dev --no-interaction --prefer-source
 
 notifications:
   email:
-    - payumsupport@forma-pro.com
+    - a2x-chip@ledj.in
