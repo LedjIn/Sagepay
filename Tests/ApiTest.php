@@ -40,8 +40,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         };
 
         $this->assertException($noClient, 'Exception', '4096');
-        $this->assertException($noVendorAndSandbox, 'InvalidArgumentException', '0', 'The vendor option must be set.');
-        $this->assertException($noSandbox, 'InvalidArgumentException', '0', 'The boolean sandbox option must be set.');
+        $this->assertException($noVendorAndSandbox, 'InvalidArgumentException');
+        $this->assertException($noSandbox, 'InvalidArgumentException');
     }
 
 
