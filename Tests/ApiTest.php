@@ -7,8 +7,6 @@ use Payum\Core\Exception\InvalidArgumentException;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
-    use \Ledjin\Sagepay\Tests\TestExceptionTrait;
-
     /**
      * @test
      */
@@ -39,7 +37,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             new Api($client, array('vendor' => 'hello'));
         };
 
-        $this->assertException($noClient, 'Exception', '4096');
+        $this->assertException($noClient, 'Exception');
         $this->assertException($noVendorAndSandbox, 'InvalidArgumentException');
         $this->assertException($noSandbox, 'InvalidArgumentException');
     }
@@ -216,5 +214,34 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         }
 
         return $api = new Api($client, $options);
+    }
+
+    protected function assertException(callable $callback, $expectedException = 'Exception', $expectedCode = null, $expectedMessage = null)
+    {
+        if (!class_exists($expectedException) || interface_exists($expectedException)) {
+            $this->fail("An exception of type '$expectedException' does not exist.");
+        }
+ 
+        try {
+            $callback();
+        } catch (\Exception $e) {
+            $class = get_class($e);
+            $message = $e->getMessage();
+            $code = $e->getCode();
+ 
+            $extraInfo = $message ? " (message was $message, code was $code)" : ($code ? " (code was $code)" : '');
+            $this->assertInstanceOf($expectedException, $e, "Failed asserting the class of exception$extraInfo.");
+ 
+            if (null !== $expectedCode) {
+                $this->assertEquals($expectedCode, $code, "Failed asserting code of thrown $class.");
+            }
+            if (null !== $expectedMessage) {
+                $this->assertContains($expectedMessage, $message, "Failed asserting the message of thrown $class.");
+            }
+            return;
+        }
+ 
+        $extraInfo = $expectedException !== 'Exception' ? " of type $expectedException" : '';
+        $this->fail("Failed asserting that exception$extraInfo was thrown.");
     }
 }
