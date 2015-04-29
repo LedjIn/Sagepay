@@ -65,7 +65,9 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
 
         // we do not need any sync action
         // but payum by default do not set any afterUrl to notify token
-        $model['afterUrl'] = $token->getAfterUrl();
+        if ($token) {
+            $model['afterUrl'] = $token->getAfterUrl();
+        }
 
         $response = $this->api->createOnsitePurchase($details);
 
