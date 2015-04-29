@@ -49,6 +49,25 @@ class OnsitePaymentFactory implements PaymentFactoryInterface
             'payum.extension.endless_cycle_detector' => new EndlessCycleDetectorExtension(),
         ));
 
+        if (false == $config['payum.api']) {
+            $config['options.required'] = array('vendor');
+
+            $config->defaults(array(
+                'sandbox' => true,
+            ));
+
+            $config['payum.api'] = function (ArrayObject $config) {
+                $config->validateNotEmpty($config['options.required']);
+
+                $sagepayConfig = array(
+                    'vendor' => $config['vendor'],
+                    'sandbox' => $config['sandbox'],
+                );
+
+                return new Api($sagepayConfig, $config['buzz.client']);
+            };
+        }
+
         return (array) $config;
     }
 }
