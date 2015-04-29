@@ -2,7 +2,6 @@
 namespace Ledjin\Sagepay;
 
 use Buzz\Client\ClientInterface;
-use Buzz\Message\Form\FormRequest;
 
 use Buzz\Message\Request;
 use Payum\Core\Bridge\Buzz\ClientFactory;
