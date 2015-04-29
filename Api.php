@@ -2,10 +2,10 @@
 namespace Ledjin\Sagepay;
 
 use Buzz\Client\ClientInterface;
-use Buzz\Message\Request;
+use Buzz\Message\Form\FormRequest;
 
+use Payum\Core\Bridge\Buzz\ClientFactory;
 use Payum\Core\Exception\InvalidArgumentException;
-use Payum\Core\Exception\Http\HttpException;
 use Ledjin\Sagepay\Bridge\Buzz\Response;
 
 use Ledjin\Sagepay\Api\ApiInterface;
@@ -42,9 +42,9 @@ class Api implements ApiInterface
         'sandbox' => null,
     );
 
-    public function __construct(ClientInterface $client, array $options)
+    public function __construct(array $options, ClientInterface $client = null)
     {
-        $this->client = $client;
+        $this->client = $client = ClientFactory::createCurl();
         $this->options = array_replace($this->options, $options);
 
         if (true == empty($this->options['vendor'])) {
@@ -68,7 +68,7 @@ class Api implements ApiInterface
 
         $query = http_build_query($paymentDetails);
 
-        $request = new Request(
+        $request = new FormRequest(
             'post',
             $this->getOnsiteResource(),
             $this->getGatewayHost()
@@ -114,7 +114,7 @@ class Api implements ApiInterface
      *
      * @return \LedjIn\Bridge\Buzz\Response
      */
-    protected function doRequest(Request $request)
+    protected function doRequest(FormRequest $request)
     {
 
         $this->client->send($request, $response = new Response());
