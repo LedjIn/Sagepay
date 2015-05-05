@@ -2,14 +2,15 @@
 
 namespace Ledjin\Sagepay\Action;
 
-use Payum\Core\Action\ActionInterface;
+use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Model\PaymentInterface;
 use Payum\Core\Request\Convert;
+use Payum\Core\Request\GetCurrency;
 use Payum\Core\Security\GenericTokenFactoryInterface;
 
-class ConvertPaymentAction implements ActionInterface
+class ConvertPaymentAction extends GatewayAwareAction
 {
     /**
      * @var GenericTokenFactoryInterface
@@ -36,10 +37,13 @@ class ConvertPaymentAction implements ActionInterface
         /** @var PaymentInterface $payment */
         $payment = $request->getSource();
 
+        $this->gateway->execute($currency = new GetCurrency($payment->getCurrencyCode()));
+        $divisor = pow(10, $currency->exp);
+
         $details = ArrayObject::ensureArrayObject($payment->getDetails());
 
         $details['VendorTxCode'] = $payment->getNumber();
-        $details['Amount'] = $payment->getTotalAmount() / 100;
+        $details['Amount'] = $payment->getTotalAmount() / $divisor;
         $details['Currency'] = $payment->getCurrencyCode();
         $details['Description'] = $payment->getDescription();
         $details['CustomerEMail'] = $payment->getClientEmail();
