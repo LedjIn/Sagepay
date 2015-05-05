@@ -4,7 +4,7 @@ namespace Ledjin\Sagepay;
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
 use Ledjin\Sagepay\Action\CaptureOffsiteAction;
-use Ledjin\Sagepay\Action\FillOrderDetailsAction;
+use Ledjin\Sagepay\Action\ConvertPaymentAction;
 use Ledjin\Sagepay\Action\NotifyAction;
 use Ledjin\Sagepay\Action\StatusAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
@@ -56,7 +56,7 @@ class OffsitePaymentFactory implements GatewayFactoryInterface
             'payum.action.capture' => new CaptureOffsiteAction(),
             'payum.action.status' => new StatusAction(),
             'payum.action.notify' => new NotifyAction(),
-            'payum.action.fill_order_details' => new FillOrderDetailsAction(),
+            'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.execute_same_request_with_model_details' => new ExecuteSameRequestWithModelDetailsAction(),
             'payum.extension.endless_cycle_detector' => new EndlessCycleDetectorExtension(),
         ));
