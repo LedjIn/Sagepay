@@ -3,7 +3,7 @@ namespace Ledjin\Sagepay;
 
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
-use Ledjin\Sagepay\Action\CaptureOnsiteAction;
+use Ledjin\Sagepay\Action\CaptureOffsiteAction;
 use Ledjin\Sagepay\Action\FillOrderDetailsAction;
 use Ledjin\Sagepay\Action\NotifyAction;
 use Ledjin\Sagepay\Action\StatusAction;
@@ -11,18 +11,26 @@ use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\PaymentFactory;
 use Payum\Core\PaymentFactoryInterface;
 
-class OnsitePaymentFactory implements PaymentFactoryInterface
+class OffsitePaymentFactory implements PaymentFactoryInterface
 {
     /**
      * @var PaymentFactoryInterface
      */
     protected $paymentFactory;
+
     /**
+     * @var array
+     */
+    private $defaultConfig;
+
+    /**
+     * @param array                   $defaultConfig
      * @param PaymentFactoryInterface $corePaymentFactory
      */
-    public function __construct(PaymentFactoryInterface $corePaymentFactory = null)
+    public function __construct(array $defaultConfig = array(), PaymentFactoryInterface $corePaymentFactory = null)
     {
         $this->paymentFactory = $corePaymentFactory ?: new PaymentFactory();
+        $this->defaultConfig = $defaultConfig;
     }
 
     /**
@@ -39,9 +47,13 @@ class OnsitePaymentFactory implements PaymentFactoryInterface
     public function createConfig(array $config = array())
     {
         $config = ArrayObject::ensureArrayObject($config);
-        $config->defaults($this->paymentFactory->createConfig());
+        $config->defaults($this->defaultConfig);
+        $config->defaults($this->paymentFactory->createConfig((array) $config));
         $config->defaults(array(
-            'payum.action.capture' => new CaptureOnsiteAction(),
+            'payum.factory_name' => 'sagepay_offsite',
+            'payum.factory_title' => 'Sagepay Offsite',
+
+            'payum.action.capture' => new CaptureOffsiteAction(),
             'payum.action.status' => new StatusAction(),
             'payum.action.notify' => new NotifyAction(),
             'payum.action.fill_order_details' => new FillOrderDetailsAction(),

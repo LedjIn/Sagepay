@@ -13,7 +13,7 @@ use Payum\Core\Request\Capture;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Exception\LogicException;
 
-class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterface
+class CaptureOffsiteAction extends PaymentAwareAction implements ApiAwareInterface
 {
     /**
      * @var Api
@@ -48,7 +48,7 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
             return;
         }
 
-        $details = $this->api->prepareOnsiteDetails($model->toUnsafeArray()); // filter model details for request
+        $details = $this->api->prepareOffsiteDetails($model->toUnsafeArray()); // filter model details for request
 
         $missing = $this->api->getMissingDetails($details); // sagepay's api is wayward we should check for presence of required minimum
 
@@ -69,7 +69,7 @@ class CaptureOnsiteAction extends PaymentAwareAction implements ApiAwareInterfac
             $model['afterUrl'] = $token->getAfterUrl();
         }
 
-        $response = $this->api->createOnsitePurchase($details);
+        $response = $this->api->createOffsitePurchase($details);
 
         $responseArr = $response->toArray();
         $model['state'] = $responseArr['Status'] ==
