@@ -4,7 +4,7 @@ namespace Ledjin\Sagepay\Action;
 
 use Ledjin\Sagepay\Api;
 use Ledjin\Sagepay\Api\State\StateInterface;
-use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -13,7 +13,7 @@ use Payum\Core\Request\Capture;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Exception\LogicException;
 
-class CaptureOffsiteAction extends PaymentAwareAction implements ApiAwareInterface
+class CaptureOffsiteAction extends GatewayAwareAction implements ApiAwareInterface
 {
     /**
      * @var Api

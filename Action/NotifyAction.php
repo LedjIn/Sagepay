@@ -1,19 +1,18 @@
 <?php
 namespace Ledjin\Sagepay\Action;
 
-use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Request\Notify;
 use Payum\Core\ApiAwareInterface;
-use Payum\Klarna\Checkout\Constants;
-use Payum\Klarna\Checkout\Request\Api\UpdateOrder;
 use Payum\Core\Request\GetHttpRequest;
 use Ledjin\Sagepay\Api\State\StateInterface;
 use Ledjin\Sagepay\Api;
 use Ledjin\Sagepay\Api\Reply\NotifyResponse;
 
-class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
+class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
 {
     /**
      * @var Api
@@ -59,7 +58,7 @@ class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
         }
 
         $httpRequest = new GetHttpRequest;
-        $this->payment->execute($httpRequest);
+        $this->gateway->execute($httpRequest);
 
         if ($httpRequest->method != 'POST') {
             return;

@@ -2,6 +2,7 @@
 
 namespace Ledjin\Sagepay\Api\Reply;
 
+use InvalidArgumentException;
 use Payum\Core\Reply\HttpResponse;
 use Ledjin\Sagepay\Api;
 
