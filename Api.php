@@ -61,7 +61,7 @@ class Api implements ApiInterface
      *
      * @return \LedjIn\Bridge\Buzz\Response
      */
-    public function createOnsitePurchase(array $paymentDetails)
+    public function createOffsitePurchase(array $paymentDetails)
     {
 
         $paymentDetails['TxType'] = static::OPERATION_PAYMENT;
@@ -70,7 +70,7 @@ class Api implements ApiInterface
 
         $request = new Request(
             'post',
-            $this->getOnsiteResource(),
+            $this->getOffsiteResource(),
             $this->getGatewayHost()
         );
 
@@ -126,7 +126,7 @@ class Api implements ApiInterface
      * @param array $paymentDetails
      * @return array
      */
-    public function prepareOnsiteDetails(array $paymentDetails)
+    public function prepareOffsiteDetails(array $paymentDetails)
     {
         $supportedParams = array(
             'VendorTxCode' => null,
@@ -225,7 +225,7 @@ class Api implements ApiInterface
         ;
     }
 
-    protected function getOnsiteResource()
+    protected function getOffsiteResource()
     {
         return '/gateway/service/vspserver-register.vsp';
     }

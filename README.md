@@ -7,7 +7,8 @@ This library implements [Sagepay](http://www.sagepay.com/) payment gateway for [
 
 ## Compatibility
 
-Use master branch for Payum 0.13.x, 0.14.x
+Use master branch for Payum 0.14.x
+Use 0.2.0 for Payum 0.13.x
 Use 0.1.12 for Payum 0.12.x
 
 ## License
